@@ -13,7 +13,11 @@ final class Eth {
         }
 
         if (!ctype_xdigit($message)) {
-            throw new InvalidArgumentException("Message should be a hexadecimal");
+            throw new InvalidArgumentException('Message should be a hexadecimal');
+        }
+
+        if (strlen($message) % 2) {
+            throw new InvalidArgumentException('Message size cannot be odd');
         }
 
         $buffer = unpack('C*', hex2bin($message));

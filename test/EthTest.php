@@ -20,4 +20,19 @@ class EthTest extends PHPUnit\Framework\TestCase
             ['0x3e27a893dc40ef8a7f0841d96639de2f58a132be5ae466d40087a2cfa83b7179', '429217acd377a3a2c57dc2d5d12f578c5d11047b6d23f1827d6d3110b95952af'],
         ];
     }
+
+    public function testNonHexadecimal()
+    {
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('Message should be a hexadecimal');
+        Eth::hashPersonalMessage(implode(range('a', 'z')));
+    }
+
+    public function testOddHex()
+    {
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('Message size cannot be odd');
+        Eth::hashPersonalMessage('0xabc');
+    }
+
 }
