@@ -1,8 +1,10 @@
 <?php
 
-use kornrunner\Eth;
+namespace kornrunner;
 
-class EthTest extends PHPUnit\Framework\TestCase
+use PHPUnit\Framework\TestCase;
+
+class EthTest extends TestCase
 {
     /**
      * @dataProvider hashPersonalMessage
@@ -23,14 +25,14 @@ class EthTest extends PHPUnit\Framework\TestCase
 
     public function testNonHexadecimal()
     {
-        $this->expectException('Exception');
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Message should be a hexadecimal');
         Eth::hashPersonalMessage(implode(range('a', 'z')));
     }
 
     public function testOddHex()
     {
-        $this->expectException('Exception');
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Message size cannot be odd');
         Eth::hashPersonalMessage('0xabc');
     }
