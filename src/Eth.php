@@ -20,7 +20,7 @@ final class Eth {
             throw new InvalidArgumentException('Message size cannot be odd');
         }
 
-        $buffer = unpack('C*', hex2bin($message));
+        $buffer = unpack('C*', (string) hex2bin($message));
         $prefix = bin2hex("\u{0019}Ethereum Signed Message:\n" . sizeof($buffer));
         return Keccak::hash(hex2bin($prefix . $message), self::HASH_SIZE);
     }
