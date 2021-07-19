@@ -1,9 +1,11 @@
+name: Tests
+
 on: [push, pull_request]
 
 jobs:
 
   phpunit:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -17,7 +19,7 @@ jobs:
       - run: php${{ matrix.php-version }} -v
       - run: php${{ matrix.php-version }} -m
       - run: composer -V
-      - run: composer install
+      - run: composer install --no-progress
       - run: php${{ matrix.php-version }} vendor/bin/phpunit
 
   code_coverage:
@@ -30,7 +32,7 @@ jobs:
           php-version: 8.0
           coverage: none
 
-      - run: composer install --no-progress --prefer-dist
+      - run: composer install --no-progress
       - run: mkdir -p build/logs
       - run: phpdbg -qrr vendor/bin/phpunit
       - run: wget https://github.com/php-coveralls/php-coveralls/releases/download/v2.4.3/php-coveralls.phar
