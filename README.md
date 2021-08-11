@@ -1,4 +1,4 @@
-# php-ethereum-util [![Build status](https://ci.appveyor.com/api/projects/status/d1qm90h668elbtc4/branch/master?svg=true)](https://ci.appveyor.com/project/kornrunner/php-ethereum-util/branch/master) [![Coverage Status](https://coveralls.io/repos/github/kornrunner/php-ethereum-util/badge.svg?branch=master)](https://coveralls.io/github/kornrunner/php-ethereum-util?branch=master) [![Latest Stable Version](https://poser.pugx.org/kornrunner/ethereum-util/v/stable)](https://packagist.org/packages/kornrunner/ethereum-util)
+# php-ethereum-util [![Tests](https://github.com/kornrunner/php-ethereum-util/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/kornrunner/php-ethereum-util/actions/workflows/tests.yml) [![Coverage Status](https://coveralls.io/repos/github/kornrunner/php-ethereum-util/badge.svg?branch=master)](https://coveralls.io/github/kornrunner/php-ethereum-util?branch=master) [![Latest Stable Version](https://poser.pugx.org/kornrunner/ethereum-util/v/stable)](https://packagist.org/packages/kornrunner/ethereum-util)
 
 Pure PHP implementation of Ethereum Utils
 
