@@ -322,4 +322,91 @@ class EthTest extends TestCase
         $this->assertTrue($isValid, 'Go-Ethereum test vector should verify correctly');
     }
 
+    public function testSignPersonalMessage()
+    {
+        $message = 'Hello, Ethereum!';
+        $privateKey = '0x4c0883a69102937d6231471b5dbb6204fe512961708279f8f64b8eb2d8e0a26f';
+        $signature = Eth::signPersonalMessage($message, $privateKey);
+
+        $this->assertArrayHasKey('r', $signature);
+        $this->assertArrayHasKey('s', $signature);
+        $this->assertArrayHasKey('v', $signature);
+        $this->assertArrayHasKey('signature', $signature);
+        $this->assertContains($signature['v'], [27, 28]);
+        $this->assertSame(66, strlen($signature['r']));
+        $this->assertSame(66, strlen($signature['s']));
+        $this->assertSame(132, strlen($signature['signature']));
+
+        // Verify signature can recover a public key
+        $messageHash = Eth::hashPersonalMessage(bin2hex($message));
+        $recoveredPublicKey = Eth::ecRecover($messageHash, $signature['r'], $signature['s'], $signature['v']);
+        $this->assertSame(130, strlen($recoveredPublicKey));
+        $this->assertStringStartsWith('04', $recoveredPublicKey);
+
+        // Verify signature is valid
+        $isValid = Eth::ecVerify($messageHash, $signature['r'], $signature['s'], $signature['v'], $recoveredPublicKey);
+        $this->assertTrue($isValid);
+    }
+
+    public function testEcRecoverInvalidSignatureValues()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid signature values');
+        Eth::ecRecover(
+            '98d22cdb65bbf8a392180cd2ee892b0a971c47e7d29daf31a3286d006b9db4dc',
+            'fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141',
+            '47427f3633371c1a30abbb2b717dbd78ef63d5b19b5a951f9d681cccdd520320',
+            0
+        );
+    }
+
+    public function testEcVerifyReturnsFalseOnInvalidSignature()
+    {
+        // Test that ecVerify returns false instead of throwing when signature is invalid
+        $result = Eth::ecVerify(
+            '98d22cdb65bbf8a392180cd2ee892b0a971c47e7d29daf31a3286d006b9db4dc',
+            'zzz',  // Invalid hex
+            '47427f3633371c1a30abbb2b717dbd78ef63d5b19b5a951f9d681cccdd520320',
+            0,
+            '04cf60398ae73fd947ffe120fba68947ec741fe696438d68a2e52caca139613ff94f220cd0d3e886f95aa226f2ad2b86be1dd5cda2813fd505d1f6a8f552904864'
+        );
+        $this->assertFalse($result);
+    }
+
+    public function testEcRecoverNonHexHash()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Hash must be a 32-byte hex string');
+        Eth::ecRecover(
+            'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
+            'f67118680df5993e8efca4d3ecc4172ca4ac5e3e007ea774293e373864809703',
+            '47427f3633371c1a30abbb2b717dbd78ef63d5b19b5a951f9d681cccdd520320',
+            0
+        );
+    }
+
+    public function testEcRecoverNonHexR()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('R must be a 32-byte hex string');
+        Eth::ecRecover(
+            '98d22cdb65bbf8a392180cd2ee892b0a971c47e7d29daf31a3286d006b9db4dc',
+            'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
+            '47427f3633371c1a30abbb2b717dbd78ef63d5b19b5a951f9d681cccdd520320',
+            0
+        );
+    }
+
+    public function testEcRecoverNonHexS()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('S must be a 32-byte hex string');
+        Eth::ecRecover(
+            '98d22cdb65bbf8a392180cd2ee892b0a971c47e7d29daf31a3286d006b9db4dc',
+            'f67118680df5993e8efca4d3ecc4172ca4ac5e3e007ea774293e373864809703',
+            'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
+            0
+        );
+    }
+
 }
