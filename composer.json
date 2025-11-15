@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-        "kornrunner/keccak": "^1.0"
+        "kornrunner/keccak": "^1.0",
+        "kornrunner/secp256k1": "^0.3"
     },
     "autoload": {
         "psr-4": {
